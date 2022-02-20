@@ -1,7 +1,6 @@
 import UIKit
 
-protocol Hero {
-    var name: String { get }
+protocol Statistic {
     var armor: Float { get }
     var attackPower: Float { get }
     var strength: Float { get }
@@ -10,13 +9,18 @@ protocol Hero {
     var hitPoints: Float { get }
     var mana: Float { get }
     
-    var attackStyle: AttackStyle { get }
-    var guildStyle: GuildType { get }
-    var currentPosition: CGPoint { get set }
-    
     typealias Stats = (armor: Float, attackPower: Float, strength: Float, agility: Float, intelligence: Float, hitPoints: Float, mana: Float)
     init(_ stats: Stats)
     mutating func updateCharacteristics(_ stats: Stats)
+}
+
+protocol Hero {
+    var name: String { get }
+    var characteristics: CharacterStatistic { get }
+    
+    var attackStyle: AttackStyle { get }
+    var guildStyle: GuildType { get }
+    var currentPosition: CGPoint { get set }
 }
 
 protocol HeroActions: Hero {
@@ -72,8 +76,7 @@ enum GuildType: String {
     case orc = "Orc"
 }
 
-struct Archmage: MovebleHero {
-    
+struct CharacterStatistic: Statistic {
     private(set) var armor: Float
     private(set) var attackPower: Float
     private(set) var strength: Float
@@ -81,11 +84,6 @@ struct Archmage: MovebleHero {
     private(set) var intelligence: Float
     private(set) var hitPoints: Float
     private(set) var mana: Float
-    
-    let attackStyle: AttackStyle = .melee
-    let guildStyle: GuildType = .alliance
-    var currentPosition: CGPoint = CGPoint(x: 0, y: 0)
-    let name: String = "Archmage"
     
     init(_ stats: Stats) {
         self.armor = stats.armor
@@ -106,6 +104,14 @@ struct Archmage: MovebleHero {
         self.hitPoints = stats.hitPoints
         self.mana = stats.mana
     }
+}
+
+struct Archmage: MovebleHero {
+    let attackStyle: AttackStyle = .melee
+    let guildStyle: GuildType = .alliance
+    var currentPosition: CGPoint = CGPoint(x: 0, y: 0)
+    let name: String = "Archmage"
+    var characteristics: CharacterStatistic
     
     func ultimate() {
         print("Mass teleport")
@@ -113,47 +119,25 @@ struct Archmage: MovebleHero {
 }
 
 extension Archmage: Hashable {
+    static func == (lhs: Archmage, rhs: Archmage) -> Bool {
+        return lhs.name == rhs.name
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(name)
-        hasher.combine(attackPower)
-        hasher.combine(mana)
+        hasher.combine(characteristics.attackPower)
+        hasher.combine(characteristics.mana)
     }
 }
 
 struct Flyer: FlyableHero {
-    
-    private(set) var armor: Float
-    private(set) var attackPower: Float
-    private(set) var strength: Float
-    private(set) var agility: Float
-    private(set) var intelligence: Float
-    private(set) var hitPoints: Float
-    private(set) var mana: Float
+    var characteristics: CharacterStatistic
     
     let attackStyle: AttackStyle = .melee
     let guildStyle: GuildType = .alliance
     var currentPosition: CGPoint = CGPoint(x: 0, y: 0)
     let name: String = "Flyer"
-    
-    init(_ stats: Stats) {
-        self.armor = stats.armor
-        self.strength = stats.strength
-        self.attackPower = stats.attackPower
-        self.agility = stats.agility
-        self.intelligence = stats.intelligence
-        self.hitPoints = stats.hitPoints
-        self.mana = stats.mana
-    }
-    
-    mutating func updateCharacteristics(_ stats: Stats) {
-        self.armor = stats.armor
-        self.attackPower = stats.attackPower
-        self.strength = stats.strength
-        self.agility = stats.agility
-        self.intelligence = stats.intelligence
-        self.hitPoints = stats.hitPoints
-        self.mana = stats.mana
-    }
+
     
     func ultimate() {
         print("Super attack")
@@ -162,39 +146,12 @@ struct Flyer: FlyableHero {
 }
 
 struct Blademaster: MovebleHero {
-    
-    private(set) var armor: Float
-    private(set) var attackPower: Float
-    private(set) var strength: Float
-    private(set) var agility: Float
-    private(set) var intelligence: Float
-    private(set) var hitPoints: Float
-    private(set) var mana: Float
+    var characteristics: CharacterStatistic
     
     let attackStyle: AttackStyle = .melee
     let guildStyle: GuildType = .orc
     var currentPosition: CGPoint = CGPoint(x: 0, y: 0)
     let name: String = "BladeMaster"
-    
-    init(_ stats: Stats) {
-        self.armor = stats.armor
-        self.strength = stats.strength
-        self.attackPower = stats.attackPower
-        self.agility = stats.agility
-        self.intelligence = stats.intelligence
-        self.hitPoints = stats.hitPoints
-        self.mana = stats.mana
-    }
-    
-    mutating func updateCharacteristics(_ stats: Stats) {
-        self.armor = stats.armor
-        self.attackPower = stats.attackPower
-        self.strength = stats.strength
-        self.agility = stats.agility
-        self.intelligence = stats.intelligence
-        self.hitPoints = stats.hitPoints
-        self.mana = stats.mana
-    }
     
     func ultimate() {
         print("Ultra attack")
@@ -202,17 +159,22 @@ struct Blademaster: MovebleHero {
     
 }
 
-let st = Hero.Stats(armor: 2, attackPower: 2, strength: 2, agility: 2, intelligence: 2, hitPoints: 2, mana: 2)
-let st1 = Hero.Stats(armor: 5, attackPower: 5, strength: 5, agility: 5, intelligence: 5, hitPoints: 1, mana: 1)
-let st2 = Hero.Stats(armor: 7, attackPower: 7, strength: 5, agility: 5, intelligence: 5, hitPoints: 1, mana: 1)
-var arch = Archmage(st)
+let st = Statistic.Stats(armor: 2, attackPower: 2, strength: 2, agility: 2, intelligence: 2, hitPoints: 2, mana: 2)
+let st1 = Statistic.Stats(armor: 5, attackPower: 5, strength: 5, agility: 5, intelligence: 5, hitPoints: 1, mana: 1)
+let st2 = Statistic.Stats(armor: 7, attackPower: 7, strength: 5, agility: 5, intelligence: 5, hitPoints: 1, mana: 1)
+
+let archStat = CharacterStatistic(st)
+var arch = Archmage(characteristics: archStat)
 
 arch.ultimate()
-arch.updateCharacteristics(st1)
+arch.characteristics.updateCharacteristics(st1)
 arch.move(to: CGPoint(x: 10, y: 5))
 
-var flyer = Flyer(st)
-var blademaster = Blademaster(st2)
+let flyStat = CharacterStatistic(st)
+var flyer = Flyer(characteristics: flyStat)
+
+let blademasertStat = CharacterStatistic(st2)
+var blademaster = Blademaster(characteristics: blademasertStat)
 
 flyer.fly(to: CGPoint(x: 1, y: 5))
 blademaster.attack()
@@ -231,9 +193,9 @@ enum SortCondition {
 func sortHeroes(_ heroes: [Hero], by param: SortCondition) -> [Hero] {
     switch param {
     case .attackPower:
-        return heroes.sorted(by: { $0.attackPower > $1.attackPower })
+        return heroes.sorted(by: { $0.characteristics.attackPower > $1.characteristics.attackPower })
     case .mana:
-        return heroes.sorted(by: { $0.mana > $1.mana })
+        return heroes.sorted(by: { $0.characteristics.mana > $1.characteristics.mana })
     }
 }
 
@@ -247,13 +209,13 @@ let sortedArrayByAttackPower = sortHeroes(heroes, by: .attackPower)
 let mostPowerHero = getMostPowerHero(from: heroes)
 let filteredArray = getHeroesByGuild(heroes, filtered: .orc)
 sortedArrayByAttackPower.forEach { hero in
-    print(hero.name, hero.attackPower)
+    print(hero.name, hero.characteristics.attackPower)
 }
 
 filteredArray.forEach { hero in
     print(hero.name, hero.guildStyle.rawValue)
 }
-print(mostPowerHero?.name, mostPowerHero?.attackPower)
+print(mostPowerHero?.name, mostPowerHero?.characteristics.attackPower)
 
 var archmageDict = [Archmage: String]()
 
