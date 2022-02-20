@@ -16,7 +16,7 @@ protocol Statistic {
 
 protocol Hero {
     var name: String { get }
-    var characteristics: CharacterStatistic { get }
+    var characteristics: Statistic { get }
     
     var attackStyle: AttackStyle { get }
     var guildStyle: GuildType { get }
@@ -111,7 +111,7 @@ struct Archmage: MovebleHero {
     let guildStyle: GuildType = .alliance
     var currentPosition: CGPoint = CGPoint(x: 0, y: 0)
     let name: String = "Archmage"
-    var characteristics: CharacterStatistic
+    var characteristics: Statistic
     
     func ultimate() {
         print("Mass teleport")
@@ -131,7 +131,7 @@ extension Archmage: Hashable {
 }
 
 struct Flyer: FlyableHero {
-    var characteristics: CharacterStatistic
+    var characteristics: Statistic
     
     let attackStyle: AttackStyle = .melee
     let guildStyle: GuildType = .alliance
@@ -146,7 +146,7 @@ struct Flyer: FlyableHero {
 }
 
 struct Blademaster: MovebleHero {
-    var characteristics: CharacterStatistic
+    var characteristics: Statistic
     
     let attackStyle: AttackStyle = .melee
     let guildStyle: GuildType = .orc
