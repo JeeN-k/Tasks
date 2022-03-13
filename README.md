@@ -10,3 +10,5 @@
 #### Task 3.2 - [SPR](https://github.com/JeeN-k/Tasks/blob/master/Task3/SRPViewController.swift)
 
 ## Task 5 - [UIKit First](https://github.com/JeeN-k/Tasks/tree/master/Task5)
+
+## Task 6 - [UIKit AutoLayout/XIB/Manual](https://github.com/JeeN-k/Tasks/tree/master/Task6)
