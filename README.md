@@ -13,4 +13,4 @@
 
 ## Task 6 - [UIKit AutoLayout/XIB/Manual](https://github.com/JeeN-k/Tasks/tree/master/Task6)
 
-##Task 7 - [Expanded TableView](https://github.com/JeeN-k/Tasks/tree/master/Task7)
+## Task 7 - [Expanded TableView](https://github.com/JeeN-k/Tasks/tree/master/Task7)
