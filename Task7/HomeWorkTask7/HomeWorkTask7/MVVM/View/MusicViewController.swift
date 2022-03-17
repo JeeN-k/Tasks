@@ -92,12 +92,10 @@ extension MusicViewController: ExpandbleHeaderView {
 extension MusicViewController {
     private func updateCells(section: Int, trackCount: Int) {
         tableView.beginUpdates()
-        if viewModel.albumSections[section].isExpanded {
-            for i in 0 ..< trackCount {
-                tableView.insertRows(at: [IndexPath(row: i, section: section)], with: .automatic)
-            }
-        } else {
-            for i in 0 ..< trackCount {
+        for i in 0 ..< trackCount {
+            if viewModel.albumSections[section].isExpanded {
+                tableView.insertRows(at: [IndexPath(row: i, section: section)], with: .fade)
+            } else {
                 tableView.deleteRows(at: [IndexPath(row: i, section: section)], with: .fade)
             }
         }
