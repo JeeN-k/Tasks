@@ -96,6 +96,7 @@ extension MusicCellView {
     
     private func configureCell() {
         backgroundColor = .secondarySystemBackground
+        selectionStyle = .none
         
         contentView.addSubview(cardView)
         cardView.addSubview(artistNameLable)
